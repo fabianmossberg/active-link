@@ -1,0 +1,35 @@
+html,body{
+    font-family: 'arial';
+    font-size:1.1rem;
+
+}
+a{
+    color: rgb(32, 32, 32);
+    padding: 0.2rem;
+
+}
+
+/* Will be applied the active link as well as it's descendant and ancestors */
+[data-active] {
+    background-color: rgba(255, 0, 0, 0.227);
+}
+
+/* Will be applied to the active link */
+[data-active="active"] {
+    color: blue;
+    background-color: red;
+   
+    font-weight: 900;
+    /* text-decoration: underline; */
+}
+
+
+/* Will be applied to links that are ancestors of the active link. */
+[data-active="ancestor"] {
+    color: rgb(172, 86, 52);
+}
+
+/* Will be applied to links that are decendants of the active link. */
+[data-active="descendant"] {
+    color: rgb(55, 84, 211);
+}
