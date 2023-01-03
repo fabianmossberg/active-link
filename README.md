@@ -7,6 +7,12 @@ Why it's awesome:
 - Does not think `/carbon` is a descendant of `/car`
 - Let's you style both the **active** link, it's **descendants** and it's **ancestors**.
 
+## Installation
+
+```sh
+pnpm add --save-dev npm i @fabianmossberg/active-link
+```
+
 ## Usage
 
 Import the action and it on an element wrapping the links.
