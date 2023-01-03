@@ -34,21 +34,24 @@ Import the action and it on an element wrapping the links.
 
 Style it with css
 ```css
+/* Will be applied the active link as well as it's descendant and ancestors */
 [data-active] {
-    color: red; /* Will be applied to all links inside the wrapper. */
+    background-color: yellow;
 }
+
+/* Will be applied to the active link */
+[data-active="active"] {
+    color: black;
+	border:2px solid red;
+    font-weight: 900;
+}
+
+/* Will be applied to links that are ancestors of the active link. */
 [data-active="ancestor"] {
-    color: green; /* Will be applied to ancestors of the active element. */
+    color: rgb(172, 86, 52);
 }
+
+/* Will be applied to links that are decendants of the active link. */
 [data-active="descendant"] {
-    color: blue; /* Will be applied to decendants of the active element. */
+    color: rgb(55, 84, 211);
 }
-```
-
-## Attributes
-
-|What|Attribute|Target with|
-|-|-|-|
-|All links in the wrapping element.|`data-active`|`[data-active]{ /* Style */ }`|
-|Ancestors to the current page.|`data-active="ancestor"`|`[data-active="ancestor"]{ /* Style */ }`|
-|Descendants of the current page|`data-active="descendant"`|`[data-active="descendant"]{ /* Style */ }`|

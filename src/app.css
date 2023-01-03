@@ -11,25 +11,31 @@ a{
 
 /* Will be applied the active link as well as it's descendant and ancestors */
 [data-active] {
-    background-color: rgba(255, 0, 0, 0.227);
+    background-color: yellow;
 }
 
 /* Will be applied to the active link */
 [data-active="active"] {
-    color: blue;
-    background-color: red;
-   
+    color: black;
+	border:2px solid red;
     font-weight: 900;
-    /* text-decoration: underline; */
 }
-
+[data-active="active"]::before {
+    content: "🧔🏻‍♂️ ";
+}
 
 /* Will be applied to links that are ancestors of the active link. */
 [data-active="ancestor"] {
     color: rgb(172, 86, 52);
 }
+[data-active="ancestor"]::before {
+    content: "👴🏻 ";
+}
 
 /* Will be applied to links that are decendants of the active link. */
 [data-active="descendant"] {
     color: rgb(55, 84, 211);
+}
+[data-active="descendant"]::before {
+    content: "👶🏻 ";
 }
