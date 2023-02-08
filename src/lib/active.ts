@@ -1,40 +1,54 @@
-import { page } from '$app/stores';
+type activeLinkOptions = {
+    prefix?: string;
+    ACTIVE?: string;
+    ANCESTOR?: string;
+    TOP_LEVEL?: string;
+    CURRENT?: string;
+    DESCENDANT?: string;
+}
 
-export const activeLink = (node: HTMLElement) => {
-    const links = node.querySelectorAll('a');
+import { page } from '$app/stores';
+export const activeLink = (node: HTMLAnchorElement | HTMLElement, options:activeLinkOptions = {}) => {
+
+    const defaultsOptions:activeLinkOptions = { prefix: '', ACTIVE: 'active', CURRENT: 'current', ANCESTOR: 'ancestor', DESCENDANT: 'descendant', TOP_LEVEL: 'top-level' }
+    const { prefix, CURRENT, ANCESTOR, TOP_LEVEL, ACTIVE, DESCENDANT } = Object.assign({}, defaultsOptions, options);
+
+    const stringWithPrefix = (string: string) => prefix ? `${prefix}-${string}` : string;    
+    const availableClasses = [CURRENT, ANCESTOR, ACTIVE, DESCENDANT, TOP_LEVEL].map(x => x.split(' ')).flat().filter(Boolean);
 
     const unsubscribe = page.subscribe(({ url }) => {
-        const currentPath = url.pathname || '/';
-
+        const links = node instanceof HTMLAnchorElement ? [node] : node.querySelectorAll('a');
         links.forEach((element: HTMLAnchorElement) => {
+            
             const href = element.getAttribute('href') || '/';
             const hrefParts = href.split('/')
-            const currentPathParts = currentPath.split('/')
-
-            // This link should be ignored because it has the data-never-change attribute.
-            const shouldBeIgnored = element.getAttribute('data-never-active') === '';
-
-            // This link is a descendant of the current page.
-            const isDescendant = currentPathParts.every((part, partIndex) => hrefParts[partIndex] === part);
             
+            const currentPath = url.pathname || '/';
+            const currentPathParts = currentPath.split('/')
+            
+            // This link should be ignored because it has the data-never-change attribute.
+            const shouldBeIgnored = element.getAttribute('data-active-link-ignore');
+            
+            // This link is a descendant of the current page.
+            const isDescendant = currentPathParts.every((part, partIndex) => hrefParts[partIndex] === part) && hrefParts.length > currentPathParts.length;
+
             // This link is an ancestor of the current page.
-            const isAncestor = hrefParts.every((part, partIndex) => currentPathParts[partIndex] === part);
+            const isAncestor = hrefParts.every((part, partIndex) => currentPathParts[partIndex] === part) && hrefParts.length < currentPathParts.length;
+            const isActive = href === currentPath
 
-            // This is the active page.
-            const isActive = href === currentPath;
-
-            if (shouldBeIgnored) {
-                delete element.dataset.active; // Delete the active attribute if it exists.
+            const isTopLevel = hrefParts.length === 2;
+            const addClasses = () => {
+                const newClasses = [];
+                isActive && newClasses.push(ACTIVE)
+                isAncestor && newClasses.push(ANCESTOR)
+                isDescendant && newClasses.push(DESCENDANT);
+                isTopLevel && newClasses.push(TOP_LEVEL);
+                (isActive || isAncestor || isDescendant) && newClasses.push(CURRENT);
+                return newClasses.map(x => x.split(' ')).flat().filter(Boolean)
             }
-            else if (isActive) {
-                element.dataset.active = 'active';
-            } else if (isAncestor) {
-                element.dataset.active = 'ancestor';
-            } else if (isDescendant) {
-                element.dataset.active = 'descendant'
-            }
-            else {
-                delete element.dataset.active
+            if(!shouldBeIgnored){
+                element.classList.remove(...availableClasses.map(stringWithPrefix));
+                element.classList.add(...addClasses().map(stringWithPrefix));
             }
         })
     });
@@ -43,5 +57,4 @@ export const activeLink = (node: HTMLElement) => {
             unsubscribe();
         }
     }
-
 }
