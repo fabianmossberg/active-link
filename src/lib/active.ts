@@ -7,7 +7,9 @@ type activeLinkOptions = {
     DESCENDANT?: string;
 }
 
-import { page } from '$app/stores';
+import { getStores } from '$app/stores';
+const { page } = getStores();
+
 export const activeLink = (node: HTMLAnchorElement | HTMLElement, options:activeLinkOptions = {}) => {
 
     const defaultsOptions:activeLinkOptions = { prefix: '', ACTIVE: 'active', CURRENT: 'current', ANCESTOR: 'ancestor', DESCENDANT: 'descendant', TOP_LEVEL: 'top-level' }
